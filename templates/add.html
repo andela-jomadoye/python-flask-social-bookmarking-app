@@ -6,16 +6,37 @@ Thermos -- Add url page
 
 {% block content %}
 <section>
-    <body>
-        <form action="" method="post">
-            <p>
-                Please enter your bookmark here:
-                <input type="text" name="url">
-            </p>
-            <p>
-                <button type="submit">Submit</button>
-            </p>
-        </form>
-    </body>
+    <h1>Add a new URL</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <table>
+            <tr {% if form.jedUrl.errors %}
+                class="error"
+                {% endif %}>
+                <td>Please enter your bookmark here</td>
+                <td>{{ form.jedUrl(size = 50) }}</td>
+            </tr>
+            <tr class="error">
+                <td></td>
+                <td>
+                    <ul>
+                        {% for error in form.jedUrl.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Add an optional description: </td>
+                <td>{{ form.description(size = 50) }}</td>
+            </tr>
+            <tr class="submit">
+                <td></td>
+                <td>
+                    <button type="submit">Submit</button>
+                </td>
+            </tr>
+        </table>
+    </form>
 </section>
 {% endblock %}
