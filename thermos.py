@@ -1,16 +1,21 @@
-from flask import Flask, render_template, url_for, request, redirect, flash
 import logging
+import os
+from flask import Flask, render_template, url_for, request, redirect, flash
 from datetime import datetime
 from form import BookmarkForm
-# from flask_wtf import Form
-# from wtforms.fields import StringField
-# from flask_wtf.html5 import URLField
-# from wtforms.validators import DataRequired, url
+from flask_sqlalchemy import SQLAlchemy
+from flask_debugtoolbar import DebugToolbarExtension
 
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
-
+app.debug = True
 app.config['SECRET_KEY'] = b'U[\ty\x0e\xbe\x83a\xe3\xa9\x19\x13\xf2\xfcOB;\x10~\xbd~\xfc`\xac'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'thermos.db')
+
+# toolbar = DebugToolbarExtension(app)
+db = SQLAlchemy(app)
+
 bookmarks = []
 
 
@@ -27,7 +32,8 @@ def index():
 @app.route('/add', methods=['GET', 'POST'])
 def add():
     form = BookmarkForm()
-    print(form.jedUrl)
+    # import pdb; pdb.set_trace()
+    # print(form.jedUrl)
     if form.validate_on_submit():
         url = form.jedUrl.data
         description = form.description.data
@@ -65,10 +71,6 @@ def store_bookmark(url, description):
         date=datetime.utcnow()
     ))
 
-
-# def BookmarkForm():
-#     url2 = URLField('url', validators=[DataRequired(), url()])
-#     description = StringField('description')
 
 if __name__ == "__main__":
     app.run(debug=True)
