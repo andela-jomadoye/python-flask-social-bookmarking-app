@@ -5,6 +5,8 @@ from datetime import datetime
 from form import BookmarkForm
 from flask_sqlalchemy import SQLAlchemy
 from flask_debugtoolbar import DebugToolbarExtension
+# from models import Bookmark
+import models
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -26,7 +28,8 @@ def index():
         'index.html',
         title="Title passes via Jinja",
         text="Text passed via Jinja",
-        new_bookmarks=new_bookmarks(5))
+        # new_bookmarks=new_bookmarks(5))
+        new_bookmarks=models.Bookmark.newest(5))
 
 
 @app.route('/add', methods=['GET', 'POST'])
@@ -37,7 +40,10 @@ def add():
     if form.validate_on_submit():
         url = form.jedUrl.data
         description = form.description.data
-        store_bookmark(url, description)
+        bm = models.Bookmark(url=url, description=description)
+        db.session.add(bm)
+        db.session.commit()
+        # store_bookmark(url, description)
         flash('Stored bookmark: '+url)
         return redirect(url_for('index'))
     else:
@@ -55,12 +61,12 @@ def server(e):
     return render_template('500.html'), 500
 
 
-def new_bookmarks(num):
-    return sorted(
-        bookmarks,
-        key=lambda bm: bm['date'],
-        reverse=True
-    )[:num]
+# def new_bookmarks(num):
+#     return sorted(
+#         bookmarks,
+#         key=lambda bm: bm['date'],
+#         reverse=True
+#     )[:num]
 
 
 def store_bookmark(url, description):
