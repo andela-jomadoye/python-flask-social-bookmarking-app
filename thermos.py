@@ -6,7 +6,6 @@ from form import BookmarkForm
 from flask_sqlalchemy import SQLAlchemy
 from flask_debugtoolbar import DebugToolbarExtension
 # from models import Bookmark
-import models
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -77,6 +76,7 @@ def store_bookmark(url, description):
         date=datetime.utcnow()
     ))
 
+import models
 
 if __name__ == "__main__":
     app.run(debug=True)
