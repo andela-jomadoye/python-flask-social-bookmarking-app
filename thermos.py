@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_debugtoolbar import DebugToolbarExtension
 # from models import Bookmark
 
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
@@ -18,6 +19,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'th
 db = SQLAlchemy(app)
 
 bookmarks = []
+
+
+# fake login
+def logged_in_user():
+    return models.User.query.filter_by(username='ww').first()
 
 
 @app.route('/')
@@ -39,7 +45,10 @@ def add():
     if form.validate_on_submit():
         url = form.jedUrl.data
         description = form.description.data
-        bm = models.Bookmark(url=url, description=description)
+        bm = models.Bookmark(
+            user=logged_in_user(),
+            url=url,
+            description=description)
         db.session.add(bm)
         db.session.commit()
         # store_bookmark(url, description)
@@ -75,6 +84,7 @@ def store_bookmark(url, description):
         user="reindert",
         date=datetime.utcnow()
     ))
+
 
 import models
 
